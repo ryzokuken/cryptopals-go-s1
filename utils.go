@@ -4,6 +4,25 @@ import (
   "math"
 )
 
+func breakSingleKeyXor(hex []byte) byte {
+  var minKey byte
+  var minScore float64
+  isSet := false
+  for i := 0; i < 256; i++ {
+    xored := single_byte_xor(hex, byte(i))
+    score := score_english_string(xored)
+
+    if !math.IsInf(score, 1) {
+      if !isSet || score < minScore {
+        minKey = byte(i)
+        minScore = score
+        isSet = true
+      }
+    }
+  }
+  return minKey
+}
+
 func fixed_xor(a, b []byte) []byte {
   result := make([]byte, len(a))
   for i, val := range a {

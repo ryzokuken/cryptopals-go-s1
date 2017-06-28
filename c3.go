@@ -2,7 +2,6 @@ package main
 
 import (
   "fmt"
-  "math"
   "encoding/hex"
 )
 
@@ -11,21 +10,7 @@ func c3() {
   output := "Cooking MC's like a pound of bacon"
   hex, _ := hex.DecodeString(input)
 
-  var minKey byte
-  var minScore float64
-  isSet := false
-  for i := 0; i < 256; i++ {
-    xored := single_byte_xor(hex, byte(i))
-    score := score_english_string(xored)
-
-    if !math.IsInf(score, 1) {
-      if !isSet || score < minScore {
-        minKey = byte(i)
-        minScore = score
-        isSet = true
-      }
-    }
-  }
+  minKey := breakSingleKeyXor(hex)
 
   if string(single_byte_xor(hex, minKey)) == output {
     fmt.Println("Challenge 3 passed!")
