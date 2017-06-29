@@ -2,7 +2,27 @@ package main
 
 import (
   "math"
+  "crypto/aes"
 )
+
+func decryptAesEcb(ciphertext, key []byte) []byte {
+  block, _ := aes.NewCipher(key)
+  bs := block.BlockSize()
+
+  if len(ciphertext) % bs != 0 {
+    panic("Need a multiple of the blocksize")
+  }
+
+  plaintext := make([]byte, 0, len(ciphertext))
+  for len(ciphertext) > 0 {
+    pb := make([]byte, bs)
+    block.Decrypt(pb, ciphertext)
+    ciphertext = ciphertext[bs:]
+    plaintext = append(plaintext, pb...)
+  }
+
+  return plaintext
+}
 
 func breakSingleKeyXor(hex []byte) byte {
   var minKey byte
